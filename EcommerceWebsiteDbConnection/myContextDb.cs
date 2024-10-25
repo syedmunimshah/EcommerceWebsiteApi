@@ -16,6 +16,9 @@ namespace EcommerceWebsiteDbConnection
         public DbSet<Cart> tbl_Cart { get; set; }
         public DbSet<Faqs> tbl_Faq { get; set; }
         public DbSet<Feedback> tbl_Feedback { get; set; }
+        public DbSet<User> tbl_users { get; set; }
+        public DbSet<Role> tbl_role { get; set; }
+        public DbSet<UserRole> tbl_userRoles { get; set; }
     }
   
 }

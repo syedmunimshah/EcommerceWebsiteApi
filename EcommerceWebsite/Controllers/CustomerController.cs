@@ -37,6 +37,29 @@ namespace EcommerceWebsite.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> LoginCustomer(LoginCustomerDTO LoginCustomerDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var token = await _customerService.LoginCustomer(LoginCustomerDTO);
+                return Ok(new {Token=token});
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
         [HttpPut]
         public async Task<IActionResult> UpdateCustomer(CustomerDTO customerDTO)
         {
