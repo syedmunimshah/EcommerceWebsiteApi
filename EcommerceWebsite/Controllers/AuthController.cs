@@ -1,6 +1,7 @@
 ﻿using EcommerceWebsiteDbConnection;
 using EcommerceWebsiteServies;
 using EcommerceWebsiteServies.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,8 @@ namespace EcommerceWebsite.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
+
+    //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKd3RTdWJqZWN0IiwiSWQiOiIxIiwiRW1haWwiOiJBYmR1bCIsImV4cCI6MTczMDE1MTk0OCwiaXNzIjoiSnd0SXNzdWVyIiwiYXVkIjoiSnd0QXVkaWVuY2UifQ.8lQWlKr0p8gppIATCtK6ERSSAjKUyl0JSGKuPSl6px8
 
 
     public class AuthController : ControllerBase
@@ -18,7 +21,7 @@ namespace EcommerceWebsite.Controllers
             _roleService = roleService;
         }
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
@@ -71,7 +74,7 @@ namespace EcommerceWebsite.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(int id)
         {

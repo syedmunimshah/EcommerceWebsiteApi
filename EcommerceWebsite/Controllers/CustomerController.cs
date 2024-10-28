@@ -1,6 +1,7 @@
 ﻿using EcommerceWebsiteDbConnection;
 using EcommerceWebsiteServies;
 using EcommerceWebsiteServies.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,7 +37,7 @@ namespace EcommerceWebsite.Controllers
             return Ok(customer);
         }
 
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> LoginCustomer(LoginCustomerDTO LoginCustomerDTO)
         {
