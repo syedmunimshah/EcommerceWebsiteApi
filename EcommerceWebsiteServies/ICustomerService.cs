@@ -17,5 +17,7 @@ namespace EcommerceWebsiteServies
         Task<string> UpdateCustomer(CustomerDTO customerDTO);
         Task<string> DeleteCustomer(int id);
 
+        Task<TokenSave> TokenSaveDatabase(string tokenValue, int UserId);
+
     }
 }

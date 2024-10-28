@@ -46,7 +46,7 @@ namespace EcommerceWebsiteServies
 
             if (existingCustomer !=null) 
             {
-                throw new KeyNotFoundException("Email already Insert");
+                throw new KeyNotFoundException("Emai is Already Exist");
             }
 
                 Customer customer = new Customer()
@@ -63,10 +63,9 @@ namespace EcommerceWebsiteServies
                 };
                 await _myContextDb.tbl_Customer.AddAsync(customer);
                 await _myContextDb.SaveChangesAsync();
+            return customer;
 
 
-                return customer;
-           
         }
 
         public async Task<string> LoginCustomer(LoginCustomerDTO LoginCustomerDTO) 
@@ -74,6 +73,7 @@ namespace EcommerceWebsiteServies
             if (LoginCustomerDTO.Email != null && LoginCustomerDTO.Password != null)
             {
                 var user = _myContextDb.tbl_Customer.FirstOrDefault(x => x.Email == LoginCustomerDTO.Email && x.Password == LoginCustomerDTO.Password);
+                var UserId = user.Id;
                 if (user != null)
                 {
                     var claims = new List<Claim>
@@ -94,6 +94,8 @@ namespace EcommerceWebsiteServies
 
                         );
                     var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+                   
+                    await TokenSaveDatabase(tokenValue, UserId);
                     return tokenValue;
 
                 }
@@ -109,6 +111,47 @@ namespace EcommerceWebsiteServies
                 throw new Exception("Credentials is not valid");
             }
 
+
+        }
+        
+        public async Task<TokenSave> TokenSaveDatabase(string tokenValue, int UserId) 
+        {
+           
+
+            TokenSave tokenSave = new TokenSave();
+            tokenSave.UserId = UserId;
+            tokenSave.Token = tokenValue;
+
+
+
+            if (tokenSave == null)
+            {
+                throw new KeyNotFoundException("Token Is Null.");
+            }
+            await _myContextDb.tbl_tokenSave.AddAsync(tokenSave);
+            await _myContextDb.SaveChangesAsync();
+            return tokenSave;
+
+
+
+            //TokenSaveDto tokenSave = new TokenSaveDto();
+
+            //tokenSave.userid = UserId;
+            //tokenSave.Token= tokenValue;
+
+            //TokenSave tokenSave1= new TokenSave();
+            //tokenSave1.UserId = (int)tokenSave.userid;
+            //tokenSave1.Token = tokenSave.Token;
+
+
+
+            //if (tokenSave == null)
+            //{
+            //    throw new KeyNotFoundException("Token Is Null.");
+            //}
+            //await _myContextDb.tbl_tokenSave.AddAsync(tokenSave1);
+            //await _myContextDb.SaveChangesAsync();
+            //return tokenSave;
 
         }
 
