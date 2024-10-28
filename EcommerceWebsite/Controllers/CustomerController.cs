@@ -32,9 +32,10 @@ namespace EcommerceWebsite.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _customerService.RegisterCustomer(customerDTO);
-            return Ok("Customer added successfully");
+           var Customer= await _customerService.RegisterCustomer(customerDTO);
+            return Ok(Customer);
         }
+
 
 
         [HttpPost]
@@ -48,6 +49,7 @@ namespace EcommerceWebsite.Controllers
             try
             {
                 var token = await _customerService.LoginCustomer(LoginCustomerDTO);
+                
                 return Ok(new {Token=token});
             }
             catch (Exception ex)
@@ -100,6 +102,21 @@ namespace EcommerceWebsite.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TokenSaveDatabase(string tokenValue, int UserId) {
+
+            try
+            {
+               var Token = await _customerService.TokenSaveDatabase(tokenValue,UserId);
+                return Ok(Token);
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

@@ -19,6 +19,7 @@ namespace EcommerceWebsiteDbConnection
         public DbSet<User> tbl_users { get; set; }
         public DbSet<Role> tbl_role { get; set; }
         public DbSet<UserRole> tbl_userRoles { get; set; }
+        public DbSet<TokenSave> tbl_tokenSave { get; set; }
     }
   
 }
