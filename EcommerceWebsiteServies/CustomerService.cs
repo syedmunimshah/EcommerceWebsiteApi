@@ -40,13 +40,13 @@ namespace EcommerceWebsiteServies
 
         }
 
-        public async Task<string> RegisterCustomer(CustomerDTO customerDTO)
+        public async Task<Customer> RegisterCustomer(CustomerDTO customerDTO)
         {
-            var existingCustomer = _myContextDb.tbl_Customer.FirstOrDefaultAsync(x=>x.Email==customerDTO.Email);
+            var existingCustomer = await _myContextDb.tbl_Customer.FirstOrDefaultAsync(x=>x.Email==customerDTO.Email);
 
             if (existingCustomer !=null) 
             {
-                return "Email already exists!";
+                throw new KeyNotFoundException("Email already Insert");
             }
 
                 Customer customer = new Customer()
@@ -63,7 +63,9 @@ namespace EcommerceWebsiteServies
                 };
                 await _myContextDb.tbl_Customer.AddAsync(customer);
                 await _myContextDb.SaveChangesAsync();
-                return $"Customer Add ID Is {customerDTO.Id}";
+
+
+                return customer;
            
         }
 

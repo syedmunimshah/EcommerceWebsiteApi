@@ -12,7 +12,7 @@ namespace EcommerceWebsiteServies
     public interface ICustomerService
     {
         Task<IEnumerable<Customer>> GetAllCustomer();
-        Task<string> RegisterCustomer(CustomerDTO customerDTO);
+        Task<Customer> RegisterCustomer(CustomerDTO customerDTO);
         Task<string> LoginCustomer(LoginCustomerDTO LoginCustomerDTO);
         Task<string> UpdateCustomer(CustomerDTO customerDTO);
         Task<string> DeleteCustomer(int id);

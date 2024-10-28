@@ -32,8 +32,8 @@ namespace EcommerceWebsite.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _customerService.RegisterCustomer(customerDTO);
-            return Ok("Customer added successfully");
+             var customer =await _customerService.RegisterCustomer(customerDTO);
+            return Ok(customer);
         }
 
 
