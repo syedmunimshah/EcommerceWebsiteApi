@@ -21,7 +21,7 @@ namespace EcommerceWebsite.Controllers
             _roleService = roleService;
         }
 
-        [Authorize]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
@@ -74,7 +74,7 @@ namespace EcommerceWebsite.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(int id)
         {

@@ -72,6 +72,8 @@ builder.Services.AddDbContext<myContextDb>(options =>
 // Dependency injection for repositories and services
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddTransient<AuthService>();
+builder.Services.AddTransient<AdminService>();
+builder.Services.AddTransient<CategoryService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();

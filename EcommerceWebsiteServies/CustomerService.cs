@@ -132,27 +132,6 @@ namespace EcommerceWebsiteServies
             await _myContextDb.SaveChangesAsync();
             return tokenSave;
 
-
-
-            //TokenSaveDto tokenSave = new TokenSaveDto();
-
-            //tokenSave.userid = UserId;
-            //tokenSave.Token= tokenValue;
-
-            //TokenSave tokenSave1= new TokenSave();
-            //tokenSave1.UserId = (int)tokenSave.userid;
-            //tokenSave1.Token = tokenSave.Token;
-
-
-
-            //if (tokenSave == null)
-            //{
-            //    throw new KeyNotFoundException("Token Is Null.");
-            //}
-            //await _myContextDb.tbl_tokenSave.AddAsync(tokenSave1);
-            //await _myContextDb.SaveChangesAsync();
-            //return tokenSave;
-
         }
 
         public async Task<string> UpdateCustomer(CustomerDTO customerDTO)
@@ -196,10 +175,6 @@ namespace EcommerceWebsiteServies
             {
                 return $"Customer with ID {id} not found.";
             }
-
-
-
-           
 
 
         }
