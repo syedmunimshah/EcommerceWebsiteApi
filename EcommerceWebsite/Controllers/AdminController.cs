@@ -14,6 +14,7 @@ namespace EcommerceWebsite.Controllers
         public AdminController(AdminService adminService)
         {
             _AdminService = adminService;
+   
         }
 
         [HttpGet]
@@ -33,11 +34,11 @@ namespace EcommerceWebsite.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddAdmin(AdminDTO admin) {
-        await _AdminService.AddAdmin(admin);
-            return Ok(admin);
+        var addadmin= await _AdminService.AddAdmin(admin);
+            return Ok(addadmin);
         }
 
-        
+
         [HttpPut]
         public async Task<IActionResult> UpdateAdmin(AdminDTO admin)
         {

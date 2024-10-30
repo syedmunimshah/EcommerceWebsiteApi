@@ -15,4 +15,8 @@
     <ProjectReference Include="..\EcommerceWebsiteServies\EcommerceWebsiteServies.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\AdminImages\" />
+  </ItemGroup>
+
 </Project>
