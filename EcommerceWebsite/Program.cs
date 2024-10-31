@@ -74,6 +74,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<CategoryService>();
+builder.Services.AddTransient<ProductService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();

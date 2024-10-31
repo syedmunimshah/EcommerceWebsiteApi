@@ -1,6 +1,7 @@
 ﻿using EcommerceWebsiteDbConnection;
 using EcommerceWebsiteRepository;
 using EcommerceWebsiteServies.DTO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -20,12 +21,14 @@ namespace EcommerceWebsiteServies
 
         private readonly myContextDb _myContextDb;
         private readonly IConfiguration _configuration;
-       
-        public CustomerService(IGenericRepository<Customer> genericRepository, myContextDb myContextDb ,IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public CustomerService(IGenericRepository<Customer> genericRepository, myContextDb myContextDb ,IConfiguration configuration, IWebHostEnvironment env)
         {
             _IGenericRepository = genericRepository;
             _myContextDb = myContextDb;
             _configuration = configuration;
+            _env = env;
             
         }
 
@@ -49,19 +52,28 @@ namespace EcommerceWebsiteServies
                 throw new KeyNotFoundException("Emai is Already Exist");
             }
 
-                Customer customer = new Customer()
-                {
-                    Name = customerDTO.Name,
-                    Email = customerDTO.Email,
-                    Phone = customerDTO.Phone,
-                    Password = customerDTO.Password,
-                    Country = customerDTO.Country,
-                    City = customerDTO.City,
-                    Address = customerDTO.Address,
-                    Gender = customerDTO.Gender,
-                    Image = customerDTO.Image,
-                };
-                await _myContextDb.tbl_Customer.AddAsync(customer);
+                Customer customer = new Customer();
+
+                customer.Name = customerDTO.Name;
+                customer.Email = customerDTO.Email;
+                customer.Phone = customerDTO.Phone;
+                customer.Password = customerDTO.Password;
+                customer.Country = customerDTO.Country;
+                customer.City = customerDTO.City;
+                customer.Address = customerDTO.Address;
+                customer.Gender = customerDTO.Gender;
+
+                //image create and save it database 
+                string uniqueFileName = $"{Guid.NewGuid()}_{customerDTO.ImageCustomer.FileName}";
+                string ImagePath = Path.Combine(_env.WebRootPath, "CustomerImage",uniqueFileName);
+                FileStream fs = new FileStream(ImagePath,FileMode.Create);
+                customerDTO.ImageCustomer.CopyTo(fs);
+
+            customer.Image = uniqueFileName;
+
+            //Image = customerDTO.Image,
+
+            await _myContextDb.tbl_Customer.AddAsync(customer);
                 await _myContextDb.SaveChangesAsync();
             return customer;
 
@@ -151,7 +163,12 @@ namespace EcommerceWebsiteServies
             entity.City = customerDTO.City;
             entity.Address = customerDTO.Address;
             entity.Gender = customerDTO.Gender;
-            entity.Image = customerDTO.Image;
+
+            string uniqueFileName = $"{Guid.NewGuid()}_{customerDTO.ImageCustomer.FileName}";
+            string ImagePath = Path.Combine(_env.WebRootPath, "CustomerImage", uniqueFileName);
+            FileStream fs = new FileStream(ImagePath,FileMode.Create);
+            customerDTO.ImageCustomer.CopyTo(fs);
+            entity.Image = uniqueFileName;
 
              _myContextDb.tbl_Customer.Update(entity);
             _myContextDb.SaveChanges();

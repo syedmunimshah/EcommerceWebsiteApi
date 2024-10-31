@@ -1,5 +1,6 @@
 ﻿using EcommerceWebsiteDbConnection;
 using EcommerceWebsiteServies.DTO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,19 @@ namespace EcommerceWebsiteServies
     public class CategoryService
     {
         private readonly myContextDb _myContextDb;
+       
         public CategoryService(myContextDb myContextDb)
         {
             _myContextDb = myContextDb;
         }
-        public async Task<IEnumerable<Category>> GetAllCategory() {
+        public async Task<IEnumerable<CategoryDTO>> GetAllCategory() {
 
-            return await _myContextDb.tbl_Category.ToListAsync();
+
+            return await _myContextDb.tbl_Category.Include(p => p.Products).Select(x => new CategoryDTO { Id = x.Id, Name = x.Name }).ToListAsync();
+            
+            
+
+
         }
         public async Task<CategoryDTO> AddCategory(CategoryDTO categoryDTO) {
             Category category = new Category();
