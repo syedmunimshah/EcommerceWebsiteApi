@@ -82,12 +82,9 @@ namespace EcommerceWebsiteServies
 
                 throw;
             }
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> parent of 4e9f7dc (save changes)
         }
     }
 }
