@@ -39,11 +39,11 @@ namespace EcommerceWebsiteServies
 
                 //image create and save it database 
                 string uniqueFileName = $"{Guid.NewGuid()}_{admin.AdminImage.FileName}";
-                string ImagePath = Path.Combine(_env.WebRootPath, "AdminImage", uniqueFileName);
+                string ImagePath = Path.Combine(_env.WebRootPath, "AdminImages", uniqueFileName);
 
                 //string ImagePath = Path.Combine(_env.WebRootPath, "AdminImages", $"{Guid.NewGuid()}", admin.AdminImage.FileName);
 
-                Stream fs = new FileStream(ImagePath, FileMode.Create);
+                FileStream fs = new FileStream(ImagePath, FileMode.Create);
                 admin.AdminImage.CopyTo(fs);
 
                 //AddAdmin.Image = admin.AdminImage.FileName;
