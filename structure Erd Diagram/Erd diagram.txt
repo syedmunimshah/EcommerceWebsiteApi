@@ -1,0 +1,86 @@
++----------------+           +------------------+
+|    tbl_admin   |           |   tbl_category   |
+|----------------|           |------------------|
+| Id (PK)        |           | Id (PK)          |
+| Name           |           | Name             |
+| Email          |           +------------------+
+| Password       |                   ^
+| Image          |                   |
++----------------+                   |
+                                    1 | 
+                                       |
+                                       |
+                                       |
+                                       |
++----------------+           +------------------+
+|   tbl_product  |<---------|   tbl_cart       |
+|----------------|           |------------------|
+| Id (PK)        |           | Id (PK)          |
+| Name           |           | Product_Id (FK)  |
+| Price          |           | Category_Id (FK) |
+| Image          |           | Cart_Quantity     |
+| Description    |           | Cart_Status      |
+| CategoryId (FK)|           +------------------+
++----------------+                   
+       |1                  
+       |               
+       |                
+       |                
+       |
+       |
++------------------+     
+|   tbl_feedback    |     
+|------------------|     
+| Id (PK)          |     
+| Name             |     
+| Description      |     
++------------------+     
+                                 
++----------------+           +------------------+
+|   tbl_customer |           |   tbl_faq        |
+|----------------|           |------------------|
+| Id (PK)        |           | Id (PK)          |
+| Name           |           | Name             |
+| Email          |           | Description      |
+| Phone          |           +------------------+
+| Password       |             
+| Country        |
+| City           |
+| Address        |
+| Gender         |
+| Image          |
++----------------+             
+
++----------------+           +------------------+
+|   tbl_role     |           |   tbl_users      |
+|----------------|           |------------------|
+| Id (PK)        |           | Id (PK)          |
+| Name           |           | Name             |
+| CreatedAt      |           | CreatedAt        |
++----------------+           +------------------+
+       |1                    
+       |                     
+       |                     
+       |                     
+       |                     1
+       |                    1|    
++-----------------+         |   
+|   tbl_userRoles |<--------+
+|-----------------|
+| Id (PK)         |
+| UserId (FK)    |
+| RoleId (FK)    |
+| DateTime        |
++-----------------+
+
++------------------+
+|   tbl_tokenSave  |
+|------------------|
+| Id (PK)          |
+| Token            |
+| UserId (FK)     |
+| CreatedAt        |
++------------------+
+
+
+https://chatgpt.com/share/6723fb94-f170-8009-9581-255dc4fa3ef2
