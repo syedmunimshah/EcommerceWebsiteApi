@@ -197,17 +197,7 @@ namespace EcommerceWebsiteServies
         {
             try
             {
-                return  await _myContextDb.tbl_userRoles.Include(r => r.role).Include(u => u.user).Select(ur => new UserRoleDTO
-                {
-                    Id = ur.Id,
-                    UserId = ur.UserId,
-                    UserName = ur.user.Name,
-                    RoleId = ur.RoleId,
-                    RoleName = ur.role.Name
-                }).ToListAsync();
-
-                    
-
+             return await  _myContextDb.tbl_userRoles.Include(u => u.user).Include(r => r.role).Select(ur => new UserRoleDTO { Id = ur.Id, UserId = ur.UserId, UserName = ur.user.Name, RoleId = ur.RoleId, RoleName = ur.role.Name }).ToListAsync();
             }
             catch (Exception)
             {
@@ -216,9 +206,30 @@ namespace EcommerceWebsiteServies
             }
 
         }
+        public async Task<UserRoleDTO> GetUserRoleById(int id)
+        {
+            var userRole = await _myContextDb.tbl_userRoles.Include(u => u.user).Include(r => r.role).FirstOrDefaultAsync(x => x.Id == id);
+            if (userRole == null)
+            {
+                throw new KeyNotFoundException("User Not Found");
+            }
+            
+            UserRoleDTO userRoleDTO= new UserRoleDTO
+             {   Id = userRole.Id,
+                 UserId= userRole.UserId,
+                 UserName= userRole.user.Name,
+                 RoleId= userRole.RoleId,
+                 RoleName= userRole.role.Name 
+             
+             };
+
+            return userRoleDTO;
 
 
-        public async Task<UserRole> AddUserRole(UserRoleDTO userRoleADO)
+
+        }
+
+        public async Task<UserRoleAddDTO> AddUserRole(UserRoleAddDTO userRoleADO)
         {
             //Object Initializer(Approach 1)
             //UserRole userRole = new UserRole()
@@ -231,19 +242,18 @@ namespace EcommerceWebsiteServies
             //return userRole;
 
 
-
             //Separate Assignment(Approach 2)
             UserRole userRole = new UserRole();
             userRole.UserId = userRoleADO.UserId;
             userRole.RoleId = userRoleADO.RoleId;
             await _myContextDb.tbl_userRoles.AddAsync(userRole);
             await _myContextDb.SaveChangesAsync();
-            return userRole;
+            return userRoleADO;
 
 
         }
 
-        public async Task<UserRole> UpdateUserRole(UserRoleDTO userRoleADO) {
+        public async Task<UserRole> UpdateUserRole(UserRoleAddDTO userRoleADO) {
 
             var entity = await _myContextDb.tbl_userRoles.FindAsync(userRoleADO.Id);
             if (entity==null) 

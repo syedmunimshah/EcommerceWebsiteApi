@@ -140,14 +140,21 @@ namespace EcommerceWebsite.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUserRoleById(int id)
+        {
+            var Role = await _roleService.GetUserRoleById(id);
+            return Ok(Role);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> AddUserRole(UserRoleDTO userRoleADO) {
+        public async Task<IActionResult> AddUserRole(UserRoleAddDTO userRoleADO) {
           var user= await _roleService.AddUserRole(userRoleADO);
             return Ok(user);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> UpdateUserRole(UserRoleDTO userRoleADO) {
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserRole(UserRoleAddDTO userRoleADO) {
        var updateUserRole= await _roleService.UpdateUserRole(userRoleADO);
             if (updateUserRole==null) {
                 return NotFound("User role not found.");
