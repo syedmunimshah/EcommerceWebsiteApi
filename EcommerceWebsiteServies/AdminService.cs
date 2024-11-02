@@ -61,13 +61,14 @@ namespace EcommerceWebsiteServies
         }
 
 
-        public async Task UpdateAdmin(AdminDTO adminDTO)
+        public async Task<Admin> UpdateAdmin(AdminDTO adminDTO)
         {
             var adminEntity = await _myContextDb.tbl_admin.FindAsync(adminDTO.Id);
             if (adminEntity == null)
             {
                 throw new KeyNotFoundException("Admin Not Found");
             }
+
             adminEntity.Name = adminDTO.Name;
             adminEntity.Email = adminDTO.Email;
             adminEntity.Password = adminDTO.Password;
@@ -81,7 +82,7 @@ namespace EcommerceWebsiteServies
             adminEntity.Image = uniqueFileName;
             _myContextDb.tbl_admin.Update(adminEntity);
             await _myContextDb.SaveChangesAsync();
-
+            return adminEntity;
 
 
         }

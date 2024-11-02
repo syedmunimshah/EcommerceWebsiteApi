@@ -40,10 +40,10 @@ namespace EcommerceWebsite.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAdmin(AdminDTO admin)
+        public async Task<IActionResult> UpdateAdmin(AdminDTO adminDTO)
         {
-            await _AdminService.UpdateAdmin(admin);
-            return Ok(admin);
+            var Admin=await _AdminService.UpdateAdmin(adminDTO);
+            return Ok(Admin);
         }
         [HttpGet]
         public async Task<IActionResult> AdminGetById(int id)

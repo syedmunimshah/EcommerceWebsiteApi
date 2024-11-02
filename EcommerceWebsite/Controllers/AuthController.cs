@@ -34,19 +34,20 @@ namespace EcommerceWebsite.Controllers
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _roleService.GetUserById(id);
-            if (user == null) { return NotFound(); }
+            if (user == null) 
+            { return NotFound(); }
             return Ok(user);
         }
 
 
         [HttpPost]
 
-        public async Task<IActionResult> AddUser(UserDto userDto)
+        public async Task<IActionResult> AddUser(UserAddDTO user)
         {
             try
             {
-                await _roleService.AddUser(userDto);
-                return Ok();
+                var userAdd= await _roleService.AddUser(user);
+                return Ok(userAdd);
             }
             catch (Exception)
             {
@@ -54,8 +55,9 @@ namespace EcommerceWebsite.Controllers
                 throw;
             }
         }
+    
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(UserDto userDto)
+        public async Task<IActionResult> UpdateUser(UserUpdateDTO userDto)
         {
             try
             {

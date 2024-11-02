@@ -19,25 +19,12 @@ namespace EcommerceWebsiteServies
         }
 
 
-        public async Task<List<UserDto>> GetAllUser()
+        public async Task<List<UserDTO>> GetAllUser()
         {
             try
             {
                 var users = await _myContextDb.tbl_users.ToListAsync();
-                List<UserDto> usersList = new List<UserDto>();
-               
-                foreach (var user in users)
-                {
-                    UserDto userdto = new UserDto();
-                    userdto.Id = user.Id;
-                    userdto.Name = user.Name;
-                    usersList.Add(userdto);
-                }
-                return usersList;
-
-                //var users =await _myContextDb.tbl_users.ToListAsync();
-
-                //return users.Select(u => new UserDto {Id=u.Id,Name=u.Name }).ToList();
+                return users.Select(x => new UserDTO { Id = x.Id,Name=x.Name,CreateAt=x.CreateAt}).ToList();
                  
             }
               
@@ -49,35 +36,46 @@ namespace EcommerceWebsiteServies
             }
         }
 
-        public async Task<UserDto> GetUserById(int id)
+        public async Task<UserDTO> GetUserById(int id)
         {
             var users = await _myContextDb.tbl_users.FindAsync(id);
             if (users==null) {
                 throw new KeyNotFoundException("User Not Found");
             }
-            UserDto userDto = new UserDto();
-            userDto.Id = users.Id;
-            userDto.Name = users.Name;
-            return userDto;
+            UserDTO userDTO = new UserDTO()
+            {
+                Id=users.Id,
+                Name=users.Name,
+                CreateAt=users.CreateAt,
+            };
+            return userDTO;
 
         }
 
-        public async Task AddUser(UserDto userDto)
+
+        public async Task<UserDTO> AddUser(UserAddDTO user)
         {
             try
             {
-                if (userDto != null)
+              
+                var username =await _myContextDb.tbl_users.FirstOrDefaultAsync(x=>x.Name==user.Name);
+                if (username != null)
                 {
-                    User user = new User();
-
-                    user.Name = userDto.Name;
-                        
-                    
-                   await _myContextDb.tbl_users.AddAsync(user);
-                   await _myContextDb.SaveChangesAsync();
-
+                    throw new KeyNotFoundException("User name is Already");
                 }
-                
+
+                User user1 = new User() { Name = user.Name };
+                await _myContextDb.tbl_users.AddAsync(user1);
+                await _myContextDb.SaveChangesAsync();
+
+                UserDTO user2=new UserDTO 
+                { 
+                    Id=user1.Id, 
+                    Name=user1.Name,
+                    CreateAt=user1.CreateAt 
+                };
+                return user2;
+
             }
             catch (Exception)
             {
@@ -86,7 +84,7 @@ namespace EcommerceWebsiteServies
             }
 
         }
-        public async Task<UserDto> UpdateUser(UserDto userDto) 
+        public async Task<UserDTO> UpdateUser(UserUpdateDTO userDto) 
         {
           
             var entity = await _myContextDb.tbl_users.FindAsync(userDto.Id);
@@ -100,9 +98,11 @@ namespace EcommerceWebsiteServies
             _myContextDb.tbl_users.Update(entity);
              await _myContextDb.SaveChangesAsync();
 
-            UserDto UserFrontView = new UserDto();
-            UserFrontView.Id = userDto.Id;
-            UserFrontView.Name=userDto.Name;
+            UserDTO UserFrontView = new UserDTO();
+            UserFrontView.Id = entity.Id;
+            UserFrontView.Name= entity.Name;
+            UserFrontView.CreateAt= entity.CreateAt;
+
 
             return UserFrontView;
 
@@ -121,11 +121,11 @@ namespace EcommerceWebsiteServies
 
 
             // Role services
-        public async Task<IEnumerable<RoleDTO>> GetAllRoles() {
+        public async Task<IEnumerable<Role>> GetAllRoles() {
             try
             {
-              var roles= await _myContextDb.tbl_role.ToListAsync();
-                return roles.Select(r => new RoleDTO { id = r.Id, Name = r.Name }).ToList();
+              return await _myContextDb.tbl_role.ToListAsync();
+               
             }
             catch (Exception)
             {
@@ -134,32 +134,32 @@ namespace EcommerceWebsiteServies
             }
         }
 
-        public async Task<RoleDTO> GetRoleById(int id) {
+        public async Task<Role> GetRoleById(int id) {
             var Roles =await _myContextDb.tbl_role.FindAsync(id);
             if (Roles == null)
             {
-                throw new KeyNotFoundException("Role Not Foundation");
+                throw new KeyNotFoundException("Role Not Found");
             }
-            RoleDTO role = new RoleDTO();
-            role.id = Roles.Id;
-            role.Name = Roles.Name;
-            return role;
+           
+            return Roles;
 
         }
 
         public async Task<RoleDTO> AddRole(RoleDTO role) {
 
-            Role roleAdd = new Role();
-            roleAdd.Name = role.Name;
-
+            var RoleName =await _myContextDb.tbl_role.FirstOrDefaultAsync(x=>x.Name==role.Name);
+     
+            if (RoleName!=null) 
+            {
+                throw new KeyNotFoundException("Role Name Already Exist.");
+            }
+            Role roleAdd = new Role() 
+            { 
+                Name=role.Name
+            };
             await _myContextDb.AddAsync(roleAdd);
             await _myContextDb.SaveChangesAsync();
-
-            RoleDTO role1 = new RoleDTO();
-            role1.id = roleAdd.Id;
-            role1.Name = roleAdd.Name;
-
-            return role1;
+            return role;
         }
 
         public async Task<RoleDTO> UpdateRole(RoleDTO roleDTO) {
@@ -173,10 +173,8 @@ namespace EcommerceWebsiteServies
             _myContextDb.tbl_role.Update(entity);
             await _myContextDb.SaveChangesAsync();
 
-            RoleDTO role= new RoleDTO();
-            role.id = entity.Id;
-            role.Name = entity.Name;
-            return role;
+
+            return roleDTO;
 
         }
 
