@@ -75,6 +75,9 @@ builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<CategoryService>();
 builder.Services.AddTransient<ProductService>();
+builder.Services.AddTransient<FAQService>();
+builder.Services.AddTransient<FeedbackService>();
+
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();

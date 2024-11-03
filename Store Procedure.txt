@@ -1,0 +1,38 @@
+Exec Sp_UpdateProduct
+@Id =2
+,@Name ='test'
+,@Price ='test'
+,@Image ='test'
+,@Description ='test'
+,@CategoryId =1
+alter procedure Sp_UpdateProduct
+@Id int
+,@Name nvarchar(100)
+,@Price nvarchar(100)
+,@Image nvarchar(100)
+,@Description nvarchar(100)
+,@CategoryId int
+as
+begin
+
+update tbl_Product set Name=@Name,Price=@Price,Image=@Image,Description=@Description,CategoryId=@CategoryId
+where Id=@Id
+
+select id,Name,Price,Image,Description,CategoryId from tbl_Product where id=@id
+end
+
+
+
+--Exec Sp_GetByIdProduct @Id=2
+alter procedure Sp_GetByIdProduct
+@Id int
+--,@Name nvarchar(100)
+--,@Price nvarchar(100)
+--,@Image	 nvarchar(100)
+--,@Description nvarchar(100)
+--,@CategoryId int
+--,@CategoryName nvarchar(100)
+as
+begin 
+select p.Id,p.Name,p.Price,p.Image,p.Description,p.CategoryId,c.Name from tbl_Product p inner join tbl_Category c on p.CategoryId=c.Id where p.Id=@Id
+end

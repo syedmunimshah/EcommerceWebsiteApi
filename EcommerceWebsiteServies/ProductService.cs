@@ -1,12 +1,17 @@
 ﻿using EcommerceWebsiteDbConnection;
 using EcommerceWebsiteServies.DTO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EcommerceWebsiteServies
 {
@@ -48,7 +53,34 @@ namespace EcommerceWebsiteServies
 
 
         }
+        public async Task<ProductGetBYIDDTO> GetByIdProduct(int id)
+        {
+            //SqlParameter[] sqlParameter = new SqlParameter[]
+            //{
+            //new SqlParameter("@Id",id)
+            //};
+            //var product = await _myContextDb.ProductGetBYIDDTO.FromSqlRaw("Exec Sp_GetByIdProduct @Id", sqlParameter).FirstOrDefaultAsync();
+            //return product;
 
+
+            var GetIdProduct = await _myContextDb.tbl_Product.Include(c => c.category).FirstOrDefaultAsync(x => x.Id == id);
+            if (GetIdProduct == null)
+            {
+                throw new KeyNotFoundException("This Product Id is not Avaliable in my Record");
+            }
+            return new ProductGetBYIDDTO()
+            {
+                Id = GetIdProduct.Id,
+                Name = GetIdProduct.Name,
+                Price = GetIdProduct.Price,
+                Image = GetIdProduct.Image,
+                Description = GetIdProduct.Description,
+                CategoryId = GetIdProduct.CategoryId,
+                CategoryName = GetIdProduct.category.Name
+            };
+
+
+        }
         public async Task<ProductDTOAdd> AddProduct(ProductDTOAdd productDTO)
         {
             try
@@ -83,7 +115,52 @@ namespace EcommerceWebsiteServies
                 throw;
             }
 
+           
 
         }
+        public async Task UpdateProduct(ProductDTOAdd productDTO)
+        {
+            try
+            {
+                string uniqueFileName = $"{Guid.NewGuid()}_{productDTO.UploadImage.FileName}";
+                string ImagePath = Path.Combine(_env.WebRootPath, "ProductImage", uniqueFileName);
+                FileStream fs = new FileStream(ImagePath, FileMode.Create);
+                productDTO.UploadImage.CopyTo(fs);
+
+                SqlParameter[] sqlParam = new SqlParameter[]
+                {
+                    new SqlParameter("@Id",productDTO.Id),
+                    new SqlParameter("@Name",productDTO.Name),
+                    new SqlParameter("@Price",productDTO.Price),
+                    new SqlParameter("@Image",uniqueFileName),
+                    new SqlParameter("@Description",productDTO.Description),
+                    new SqlParameter("@CategoryId",productDTO.CategoryId)
+
+                };
+                //await _myContextDb.Database.ExecuteSqlRawAsync("Sp_UpdateProduct", sqlParam);
+                await _myContextDb.Database.ExecuteSqlRawAsync("Sp_UpdateProduct @Id, @Name, @Price, @Image, @Description, @CategoryId", sqlParam);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("An error occurred while updating the product.", ex);
+            }
+        }
+
+
+        public async Task<Product> DeleteProduct(int id)
+        {
+          
+            var deleteproduct = await _myContextDb.tbl_Product.FindAsync(id);
+            if (deleteproduct == null)
+            {
+                throw new KeyNotFoundException("Product Not Found");
+            }
+            _myContextDb.tbl_Product.Remove(deleteproduct);
+
+            await _myContextDb.SaveChangesAsync();
+            return deleteproduct;
+        }
+        
     }
 }
