@@ -37,7 +37,7 @@ namespace EcommerceWebsite.Controllers
             return Ok(customer);
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> LoginCustomer(LoginCustomerDTO LoginCustomerDTO)
         {

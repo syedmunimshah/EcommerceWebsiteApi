@@ -33,11 +33,30 @@ namespace EcommerceWebsite.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAdmin(AdminDTO admin) {
+        public async Task<IActionResult> RegisterAdmin(AdminDTO admin) {
         var addadmin= await _AdminService.AddAdmin(admin);
             return Ok(addadmin);
         }
 
+      
+        [HttpPost]
+        public async Task<IActionResult> AdminLogin(AdminLoginDTO adminLoginDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var token = await _AdminService.AdminLogin(adminLoginDTO);
+                return Ok(new { Token = token });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPut]
         public async Task<IActionResult> UpdateAdmin(AdminDTO adminDTO)

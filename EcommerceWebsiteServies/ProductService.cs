@@ -81,7 +81,7 @@ namespace EcommerceWebsiteServies
 
 
         }
-        public async Task<ProductDTOAdd> AddProduct(ProductDTOAdd productDTO)
+        public async Task<ProductGetBYIDDTO> AddProduct(ProductDTOAdd productDTO)
         {
             try
             {
@@ -90,6 +90,7 @@ namespace EcommerceWebsiteServies
                     throw new KeyNotFoundException("This Product Is already addeed");
                 }
 
+                
                 Product product=new Product();
 
                 product.Name = productDTO.Name;
@@ -107,7 +108,21 @@ namespace EcommerceWebsiteServies
 
                 await _myContextDb.tbl_Product.AddAsync(product);
                 await _myContextDb.SaveChangesAsync();
-                return productDTO;
+
+                var SaveDataShow =await _myContextDb.tbl_Product.Include(c => c.category).FirstOrDefaultAsync(x => x.Id == product.Id);
+
+                ProductGetBYIDDTO productGetBYIDDTO = new ProductGetBYIDDTO() 
+                {
+                    Id = SaveDataShow.Id,
+                    Name = SaveDataShow.Name,
+                    Price = SaveDataShow.Price,
+                    Description = SaveDataShow.Description,
+                    Image = SaveDataShow.Image,
+                    CategoryId = SaveDataShow.CategoryId,
+                    CategoryName = SaveDataShow.category.Name,
+                };
+
+                return productGetBYIDDTO;
             }
             catch (Exception)
             {
