@@ -13,9 +13,11 @@ namespace EcommerceWebsite.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
-        public CustomerController(ICustomerService customerService)
+        private readonly TestController testController;
+        public CustomerController(ICustomerService customerService, TestController testController)
         {
             _customerService = customerService;
+            this.testController = testController;
         }
 
         [HttpGet]
@@ -33,7 +35,16 @@ namespace EcommerceWebsite.Controllers
                 return BadRequest(ModelState);
             }
 
-             var customer =await _customerService.RegisterCustomer(customerDTO);
+            var customer = await _customerService.RegisterCustomer(customerDTO);
+
+
+            //Step 1: 
+            //ISI PROJECT KE ANDAR TUM EK NEW VIEW cONTROLLER BANALO 
+            //Step 2:
+            //IS API KO TUM US CONTROLLER MAI CALL KRWAO
+
+            //testController.Index(customer);
+
             return Ok(customer);
         }
 

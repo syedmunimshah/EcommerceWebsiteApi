@@ -13,7 +13,7 @@ namespace EcommerceWebsiteDbConnection
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreateAt  { get; set; } = DateTime.Now;
-        public virtual List<UserRole> UserRoles { get; set; }
+        public virtual List<AssignRole> AssignRoles { get; set; }
 
 
     }

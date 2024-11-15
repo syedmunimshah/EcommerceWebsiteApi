@@ -132,20 +132,20 @@ namespace EcommerceWebsite.Controllers
 
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUserRole()
-        {
-            var userRole= await _roleService.GetAllUserRole();
-            return Ok(userRole);
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllUserRole()
+        //{
+        //    var userRole= await _roleService.GetAllUserRole();
+        //    return Ok(userRole);
 
-        }
+        //}
 
-        [HttpGet]
-        public async Task<IActionResult> GetUserRoleById(int id)
-        {
-            var Role = await _roleService.GetUserRoleById(id);
-            return Ok(Role);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetUserRoleById(int id)
+        //{
+        //    var Role = await _roleService.GetUserRoleById(id);
+        //    return Ok(Role);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> AddUserRole(UserRoleAddDTO userRoleADO) {

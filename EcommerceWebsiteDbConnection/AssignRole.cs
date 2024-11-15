@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace EcommerceWebsiteDbConnection
 {
-    public class UserRole
+    public class AssignRole
     {
         [Key]
         public int Id { get; set; }
 
+        public int? AdminId { get; set; }
+        public Admin Admin { get; set; }
+        public int? CustomerId { get; set; }
+        public Customer Customer { get; set; }
+        public int? UserId { get; set; }
         public User user { get; set; }
-        public int UserId { get; set; }
 
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
         public Role role { get; set; }
         public DateTime dateTime { get; set; } = DateTime.Now;
         
