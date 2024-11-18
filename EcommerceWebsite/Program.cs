@@ -41,29 +41,33 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
 // JWT Authentication setup
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+// Authorization policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("Employee", policy => policy.RequireRole("Employee"));
+    options.AddPolicy("Customer", policy => policy.RequireRole("Customer"));
 });
 
 // Database context configuration
@@ -72,14 +76,14 @@ builder.Services.AddDbContext<myContextDb>(options =>
 
 // Dependency injection for repositories and services
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+// Register other services
 builder.Services.AddTransient<AuthService>();
-builder.Services.AddTransient<AdminService>();
 builder.Services.AddTransient<CategoryService>();
 builder.Services.AddTransient<ProductService>();
 builder.Services.AddTransient<FAQService>();
 builder.Services.AddTransient<FeedbackService>();
-
-builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
@@ -91,11 +95,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-// Order matters: Authentication should be added before Authorization
-app.UseAuthentication();
+// Middleware order is important
+app.UseRouting();
+app.UseAuthentication(); // Add authentication middleware before authorization
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers(); // Map controller routes directly without explicit UseEndpoints
 
 app.Run();
+

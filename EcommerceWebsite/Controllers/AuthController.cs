@@ -10,9 +10,7 @@ namespace EcommerceWebsite.Controllers
     [Route("[controller]/[action]")]
     [ApiController]
 
-    //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKd3RTdWJqZWN0IiwiSWQiOiIxIiwiRW1haWwiOiJBYmR1bCIsImV4cCI6MTczMDE1MTk0OCwiaXNzIjoiSnd0SXNzdWVyIiwiYXVkIjoiSnd0QXVkaWVuY2UifQ.8lQWlKr0p8gppIATCtK6ERSSAjKUyl0JSGKuPSl6px8
-
-
+ 
     public class AuthController : ControllerBase
     {
         private readonly AuthService _roleService;
@@ -21,7 +19,7 @@ namespace EcommerceWebsite.Controllers
             _roleService = roleService;
         }
 
-        //[Authorize(Roles = "Admin")]
+ 
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
@@ -42,7 +40,7 @@ namespace EcommerceWebsite.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> AddUser(UserAddDTO user)
+        public async Task<IActionResult> RegisterUser(UserAddDTO user)
         {
             try
             {
@@ -55,7 +53,25 @@ namespace EcommerceWebsite.Controllers
                 throw;
             }
         }
-    
+
+        [HttpPost]
+        public async Task<IActionResult> userLogin(UserLoginDTO userLoginDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var token = await _roleService.UserLogin(userLoginDTO);
+                return Ok(new { Token = token });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UserUpdateDTO userDto)
         {
@@ -76,7 +92,7 @@ namespace EcommerceWebsite.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
+      
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -110,11 +126,13 @@ namespace EcommerceWebsite.Controllers
             return Ok(Role);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddRole(RoleDTO roleDTO) {
             var role=await _roleService.AddRole(roleDTO);
             return Ok(role);
         }
+        //[Authorize(Roles = "Admin, Manager, SuperUser")]
 
         [HttpPut]
         public async Task<IActionResult> UpdateRole(RoleDTO roleDTO)
@@ -132,20 +150,20 @@ namespace EcommerceWebsite.Controllers
 
 
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllUserRole()
-        //{
-        //    var userRole= await _roleService.GetAllUserRole();
-        //    return Ok(userRole);
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserRole()
+        {
+            var userRole = await _roleService.GetAllUserRole();
+            return Ok(userRole);
 
-        //}
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetUserRoleById(int id)
-        //{
-        //    var Role = await _roleService.GetUserRoleById(id);
-        //    return Ok(Role);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetUserRoleById(int id)
+        {
+            var Role = await _roleService.GetUserRoleById(id);
+            return Ok(Role);
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddUserRole(UserRoleAddDTO userRoleADO) {
